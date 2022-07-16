@@ -10,9 +10,9 @@ from scipy.special import comb
 from itertools import combinations
 
 # Loading Stock Prices
-path = "../input/jpx-tokyo-stock-exchange-prediction/"  ############difference between these two prices?
+path = "../input/jpx-tokyo-stock-exchange-prediction/" #################################################difference between these two prices?
 df_prices = pd.read_csv(f"{path}train_files/stock_prices.csv")
-df_prices = df_prices[~df_prices["Target"].isnull()]  #############~ doing?
+df_prices = df_prices[~df_prices["Target"].isnull()]  ############################################################################~ doing?
 prices = pd.read_csv(f"{path}supplemental_files/stock_prices.csv")
 df_prices = pd.concat([df_prices, prices])
 
@@ -27,7 +27,7 @@ def fe(df):
     df['x6'] = (df['High']-df['Open'])/(df['High']+df['Low']+0.001)
     tlist = [1,2,3]
     df_pivot = df.pivot('Date','SecuritiesCode','Close')
-    tmp = df_pivot.rolling(tlist[0]).mean().unstack().reset_index()############# tmp doing? why we need tlist?
+    tmp = df_pivot.rolling(tlist[0]).mean().unstack().reset_index()###################################################### tmp doing? why we need tlist?
     tmp.columns = ['SecuritiesCode','Date',f'close_mean_{tlist[0]}']
     for tt in tlist[1:]:
         tmp2 = df_pivot.rolling(tt).mean().unstack().reset_index()
@@ -110,7 +110,7 @@ def adjuster(df):
 
     return df.groupby("Date").apply(predictor_per_day).reset_index(level=0, drop=True)
 
-def _predictor_base(feature_df):
+def _predictor_base(feature_df):  ############################################################################################## what is this predict for?
     return model.predict(feature_df[feats])
 
 def _predictor_with_adjuster(feature_df):
@@ -131,11 +131,11 @@ import lightgbm as lgb
 feats = ['Open', 'High', 'Low', 'Close','AdjustmentFactor','ExpectedDividend',\
          'SupervisionFlag', 'x1', 'x2', 'x3', 'x4', 'x5', 'x6', 'close_mean_ratio_1',
        'close_ratio_1', 'close_mean_ratio_2', 'close_ratio_2',
-       'close_mean_ratio_3', 'close_ratio_3', 'vwap', 'amount']
+       'close_mean_ratio_3', 'close_ratio_3', 'vwap', 'amount'] #################################################################################why select these features
 
 max_score = 0
 params = {
-    'learning_rate':0.05,
+    'learning_rate':0.05,################################################################################how to tuning these hyperparameters?
     "objective": "regression",
     "metric": "rmse",
     'boosting_type': "gbdt",
@@ -155,7 +155,7 @@ params = {
 oof_predictions = np.zeros(df_prices.shape[0])
 predictions = np.zeros(prices.shape[0])
 modellist = []
-for fold, (trn_ind, val_ind) in enumerate(enumsplit):
+for fold, (trn_ind, val_ind) in enumerate(enumsplit):################################################################################explain this K-fold logic?
     print(f'Training fold {fold + 1}')
     x_train, x_val = df_prices[feats].iloc[trn_ind], df_prices[feats].iloc[val_ind]
     y_train, y_val = df_prices["Target"].iloc[trn_ind], df_prices["Target"].iloc[val_ind]
@@ -173,9 +173,10 @@ for fold, (trn_ind, val_ind) in enumerate(enumsplit):
     modellist.append(model)
     
 
-env = jpx_tokyo_market_prediction.make_env()
+env = jpx_tokyo_market_prediction.make_env()################################################################################what is this for？
 iter_test = env.iter_test()
 data = df_prices.copy()
+################################################################################no other models？
 
 for prices, options, financials, trades, secondary_prices, sample_prediction in iter_test:
     prices = fill_nans(prices)
