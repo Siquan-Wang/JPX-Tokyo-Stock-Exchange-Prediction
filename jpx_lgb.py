@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-import jpx_tokyo_market_prediction
+import jpx_tokyo_market_prediction ############what is this package?
 from sklearn.tree import DecisionTreeRegressor
 from tqdm import tqdm
 import optuna
@@ -10,16 +10,16 @@ from scipy.special import comb
 from itertools import combinations
 
 # Loading Stock Prices
-path = "../input/jpx-tokyo-stock-exchange-prediction/"
+path = "../input/jpx-tokyo-stock-exchange-prediction/"  ############difference between these two prices?
 df_prices = pd.read_csv(f"{path}train_files/stock_prices.csv")
-df_prices = df_prices[~df_prices["Target"].isnull()]
+df_prices = df_prices[~df_prices["Target"].isnull()]  #############~ doing?
 prices = pd.read_csv(f"{path}supplemental_files/stock_prices.csv")
 df_prices = pd.concat([df_prices, prices])
-#testing
+
 
 def fe(df):
     df = df.sort_values(by=['Date','SecuritiesCode']).set_index('RowId')
-    df['x1'] = (df['High']-df['Low'])/(df['Close']-df['Open']+0.001)
+    df['x1'] = (df['High']-df['Low'])/(df['Close']-df['Open']+0.001) #Technical factors
     df['x2'] = (df['High']-df['Open'])/(df['High']-df['Close']+0.001)
     df['x3'] = (df['Low']-df['Open'])/(df['Low']-df['Close']+0.001)
     df['x4'] = (df['High']-df['Low'])/(df['High']+df['Low']+0.001)
@@ -27,7 +27,7 @@ def fe(df):
     df['x6'] = (df['High']-df['Open'])/(df['High']+df['Low']+0.001)
     tlist = [1,2,3]
     df_pivot = df.pivot('Date','SecuritiesCode','Close')
-    tmp = df_pivot.rolling(tlist[0]).mean().unstack().reset_index()
+    tmp = df_pivot.rolling(tlist[0]).mean().unstack().reset_index()############# tmp doing? why we need tlist?
     tmp.columns = ['SecuritiesCode','Date',f'close_mean_{tlist[0]}']
     for tt in tlist[1:]:
         tmp2 = df_pivot.rolling(tt).mean().unstack().reset_index()
