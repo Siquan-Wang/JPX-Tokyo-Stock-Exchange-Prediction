@@ -15,7 +15,7 @@ df_prices = pd.read_csv(f"{path}train_files/stock_prices.csv")
 df_prices = df_prices[~df_prices["Target"].isnull()]
 prices = pd.read_csv(f"{path}supplemental_files/stock_prices.csv")
 df_prices = pd.concat([df_prices, prices])
-
+#testing
 
 def fe(df):
     df = df.sort_values(by=['Date','SecuritiesCode']).set_index('RowId')
