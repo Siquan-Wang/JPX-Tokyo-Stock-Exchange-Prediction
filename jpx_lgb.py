@@ -26,7 +26,7 @@ def fe(df):
     df['x5'] = (df['Close']-df['Open'])/(df['High']+df['Low']+0.001)
     df['x6'] = (df['High']-df['Open'])/(df['High']+df['Low']+0.001)
     tlist = [1,2,3]
-    df_pivot = df.pivot('Date','SecuritiesCode','Close')
+    df_pivot = df.pivot('Date','SecuritiesCode','Close') 
     tmp = df_pivot.rolling(tlist[0]).mean().unstack().reset_index()###################################################### tmp doing? why we need tlist?
     tmp.columns = ['SecuritiesCode','Date',f'close_mean_{tlist[0]}']
     for tt in tlist[1:]:
